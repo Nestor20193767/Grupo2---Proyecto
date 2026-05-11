@@ -57,7 +57,7 @@ El proyecto sigue una metodología de reconocimiento de patrones dividida en cua
 
 Este proyecto es una colaboración realizada por:
 
-  * **Nombre del Autor 1** - [GitHub](https://www.google.com/search?q=https://github.com/usuario1)
+  * **Néstor Manuel Allende Heredia** - [GitHub](https://www.google.com/search?q=https://github.com/usuario1)
   * **Marx Christian Ríos Morales** - [GitHub](https://www.google.com/search?q=https://github.com/usuario2)
   * **Renzo William Luna Aliaga** - [GitHub](https://www.google.com/search?q=https://github.com/usuario3)
   * **Nombre del Autor 4** - [GitHub](https://www.google.com/search?q=https://github.com/usuario4)

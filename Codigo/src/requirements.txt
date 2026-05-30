@@ -1,0 +1,12 @@
+numpy
+pandas
+polars
+matplotlib
+wfdb
+neurokit2
+kagglehub[pandas-datasets]
+scipy
+imbalanced-learn
+scikit-learn
+torch
+torchinfo

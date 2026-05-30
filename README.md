@@ -1,68 +1,67 @@
-# Clasificación Automática de Arritmias Cardíacas 🫀
+# Clasificación Automática de Arritmias Cardíacas
 
 ### Proyecto de Reconocimiento de Patrones
 
-Este repositorio contiene el desarrollo de un sistema inteligente diseñado para la detección y clasificación de anomalías en señales de **Electrocardiograma (ECG)**. El proyecto aborda el reto clínico de procesar grandes volúmenes de datos cardiacos para identificar latidos patológicos de manera eficiente.
+Este repositorio contiene el diseño e implementación de un modelo de inteligencia artificial para la clasificación automática de arritmias cardíacas a partir de señales de electrocardiograma (ECG) de una sola derivación. El proyecto evoluciona hacia una arquitectura híbrida que integra Redes Convolucionales Temporales (TCN) y Autoencoders Variacionales Condicionales (cVAE).
 
------
+---
 
-## 📖 Contexto del Problema
+## Contexto del Problema
 
-La interpretación manual de registros de ECG prolongados (como los estudios Holter) es una tarea que consume mucho tiempo y es propensa al error humano por fatiga. Las arritmias pueden variar desde hallazgos benignos hasta condiciones que ponen en riesgo la vida.
+La revisión manual de registros de ECG prolongados (como el monitoreo Holter) consume una cantidad excesiva de tiempo y recursos hospitalarios. Además, es altamente susceptible a errores humanos derivados de la fatiga visual y cognitiva.
 
-**Objetivo:** Construir un clasificador multiclase que analice segmentos de señal de una sola derivación y categorice cada latido automáticamente, facilitando la priorización de casos críticos en el entorno hospitalario.
+**Objetivo:** Mitigar las limitaciones del análisis manual mediante un sistema que captura la secuencia temporal de las señales con TCN y soluciona el desbalance de clases sintetizando datos para las categorías minoritarias con cVAE.
 
-## 📊 Datos: MIT-BIH Arrhythmia Database
+## Datos: MIT-BIH Arrhythmia Database
 
-El sistema se entrena y valida utilizando el dataset **MIT-BIH**, un estándar en la industria que incluye:
+El sistema se entrena y valida utilizando el conjunto de datos MIT-BIH Arrhythmia Database. Este es el estándar de referencia e incluye las siguientes características:
 
-  * **Registros:** 48 extractos de 30 minutos de dos derivaciones.
-  * **Anotaciones:** Etiquetas de latidos revisadas por expertos.
-  * **Categorías (Estándar AAMI):**
-      * **N**: Latidos normales.
-      * **S**: Latidos supraventriculares.
-      * **V**: Latidos ventriculares.
-      * **F**: Latidos de fusión.
-      * **Q**: Latidos no clasificables.
+* **Registros:** 48 extractos de media hora de duración correspondientes a señales ambulatorias de dos canales.
+* **Anotaciones:** Aproximadamente 110,000 latidos individuales validados por al menos dos cardiólogos.
+* **N (Normal):** Latidos normales o de paquete de rama.
+* **S (Supraventricular):** Latidos ectópicos supraventriculares.
+* **V (Ventricular):** Latidos ectópicos ventriculares.
+* **F (Fusión):** Latidos de fusión entre un latido normal y uno ventricular.
+* **Q (Desconocido/No clasificable):** Latidos cuyo origen no pudo ser determinado o con marcapasos.
 
------
+---
 
-## 🛠️ Pipeline del Proyecto (En Desarrollo)
+## Pipeline del Proyecto (En Desarrollo)
 
-El proyecto sigue una metodología de reconocimiento de patrones dividida en cuatro fases:
+El proyecto sigue una metodología de procesamiento dividida en fases clave:
 
-1.  **Adquisición y Limpieza:** Carga de señales desde PhysioNet y eliminación de ruidos (movimiento, respiración, interferencia eléctrica).
-2.  **Segmentación:** Identificación de complejos QRS y extracción de ventanas temporales.
-3.  **Extracción/Aprendizaje de Características:** Análisis de la morfología del latido y variabilidad del ritmo.
-4.  **Clasificación:** Evaluación de distintas arquitecturas (Machine Learning Clásico vs. Deep Learning) para determinar la mayor precisión y sensibilidad clínica.
+1. **Acondicionamiento y Filtrado:** Aplicación de un filtro pasa-alto de 0.5 Hz, un filtro Notch de 60 Hz y un filtro pasa-bajo de 45 Hz para limpiar la señal.
+2. **Segmentación:** Extracción de latidos utilizando una ventana fija de 256 muestras centrada en el pico R.
+3. **Normalización:** Escalamiento Min-Max en el rango de 0 a 1 para homogenizar las amplitudes.
+4. **Modelado Híbrido:** Uso de TCN para extraer características de largo alcance y cVAE para inyectar muestras sintéticas de alta fidelidad en el entrenamiento.
 
------
+---
 
-## 💻 Instalación y Uso
+## Instalación y Uso
 
 *(Instrucciones preliminares)*
 
-1.  Clonar el repositorio:
-    ```bash
-    git clone https://github.com/Nestor20193767/ReconocimientodePatrones.git
-    ```
-2.  Instalar dependencias base:
-    ```bash
-    pip install numpy pandas matplotlib scipy wfdb
-    ```
+1. Clonar el repositorio:
+```bash
+git clone https://github.com/Nestor20193767/ReconocimientodePatrones.git
+```
 
------
+2. Instalar dependencias base:
+```bash
+pip install numpy pandas matplotlib scipy wfdb
+```
 
-## 👥 Equipo de Desarrollo
+---
 
-Este proyecto es una colaboración realizada por:
+## Equipo de Desarrollo
 
-  * **Néstor Manuel Allende Heredia** - [GitHub](https://www.google.com/search?q=https://github.com/usuario1)
-  * **Marx Christian Ríos Morales** - [GitHub](https://www.google.com/search?q=https://github.com/usuario2)
-  * **Renzo William Luna Aliaga** - [GitHub](https://www.google.com/search?q=https://github.com/usuario3)
-  * **Nombre del Autor 4** - [GitHub](https://www.google.com/search?q=https://github.com/usuario4)
+Este proyecto es una colaboración de estudiantes de Ingeniería Biomédica, realizada por:
 
------
+* **Néstor Manuel Allende Heredia**  - [GitHub](https://www.google.com/search?q=https://github.com/Nestor20193767)
+* **Marx Christian Ríos Morales**  - [GitHub](https://www.google.com/search?q=https://github.com/MarxRios)
+* **Renzo William Luna Aliaga**  - [GitHub](https://www.google.com/search?q=https://github.com/RenzoLuna)
+* **Luis Fernando Galván Nuñez**  - [GitHub](https://www.google.com/search?q=https://github.com/LuisGalvan)
+
 
 ## 📄 Licencia
 

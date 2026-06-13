@@ -12,30 +12,43 @@ La revisión manual de registros de ECG prolongados (como el monitoreo Holter) c
 
 **Objetivo:** Mitigar las limitaciones del análisis manual mediante un sistema que captura la secuencia temporal de las señales con TCN y soluciona el desbalance de clases sintetizando datos para las categorías minoritarias con cVAE.
 
-## Datos: MIT-BIH Arrhythmia Database
+## Base de Datos / Datasets
 
-El sistema se entrena y valida utilizando el conjunto de datos MIT-BIH Arrhythmia Database. Este es el estándar de referencia e incluye las siguientes características:
+El desarrollo y validación de este framework (TCN-cVAE) se fundamenta en el análisis comparativo de dos conjuntos de datos de electrocardiografía con características estructurales, de resolución y de origen clínico significativamente opuestas:
 
-* **Registros:** 48 extractos de media hora de duración correspondientes a señales ambulatorias de dos canales.
-* **Anotaciones:** Aproximadamente 110,000 latidos individuales validados por al menos dos cardiólogos.
-* **N (Normal):** Latidos normales o de paquete de rama.
-* **S (Supraventricular):** Latidos ectópicos supraventriculares.
-* **V (Ventricular):** Latidos ectópicos ventriculares.
-* **F (Fusión):** Latidos de fusión entre un latido normal y uno ventricular.
-* **Q (Desconocido/No clasificable):** Latidos cuyo origen no pudo ser determinado o con marcapasos.
+### 1. ECG5000 Dataset
+* **Origen:** Derivado de la base de datos de insuficiencia cardíaca congestiva BIDMC disponible en PhysioNet.
+* **Volumen:** 5,000 latidos individuales pre-extraídos.
+* **Dimensiones:** Registro monocanal (unidimensional) con una longitud fija de 140 puntos de datos por latido.
+* **Limitaciones Fisiológicas:** Este dataset experimental cuenta con un preprocesamiento agresivo donde se aplicó interpolación matemática para forzar la uniformidad de los vectores. Esto causó la pérdida de la tasa de muestreo original (Hz) y un enventanado asimétrico que desplaza el pico R hacia los extremos, distorsionando la morfología clásica de las ondas cardíacas. Fue utilizado estrictamente como base de validación inicial y prueba de concepto.
 
----
-
-## Pipeline del Proyecto (En Desarrollo)
-
-El proyecto sigue una metodología de procesamiento dividida en fases clave:
-
-1. **Acondicionamiento y Filtrado:** Aplicación de un filtro pasa-alto de 0.5 Hz, un filtro Notch de 60 Hz y un filtro pasa-bajo de 45 Hz para limpiar la señal.
-2. **Segmentación:** Extracción de latidos utilizando una ventana fija de 256 muestras centrada en el pico R.
-3. **Normalización:** Escalamiento Min-Max en el rango de 0 a 1 para homogenizar las amplitudes.
-4. **Modelado Híbrido:** Uso de TCN para extraer características de largo alcance y cVAE para inyectar muestras sintéticas de alta fidelidad en el entrenamiento.
+### 2. 12-Lead Arrhythmia Database (PhysioNet)
+* **Origen:** *A large scale 12-lead electrocardiogram database for arrhythmia study*.
+* **Volumen:** 45,152 registros clínicos correspondientes a pacientes independientes en condiciones de reposo.
+* **Dimensiones:** Matriz multicanal de 12 derivaciones estándar simultáneas (I, II, III, aVR, aVL, aVF, V1-V6). Cada registro cuenta con una duración continua de 10 segundos.
+* **Resolución Temporal:** Frecuencia de muestreo nativa de 500 Hz (5,000 muestras por derivación), manteniendo intactas las proporciones reales y la morfología clínica completa (complejo QRS, segmentos ST, ondas P y T).
+* **Anotaciones:** Diagnósticos clínicos reales indexados mediante ontologías estandarizadas de códigos SNOMED CT.
 
 ---
+
+### Análisis Comparativo e Impacto en el Pipeline
+
+| Característica | ECG5000 | 12-Lead Arrhythmia Database |
+| :--- | :--- | :--- |
+| **Tipo de Señal** | Latido aislado (Interpolado) | Señal continua de 10 segundos |
+| **Canales / Derivaciones**| 1 (Unidimensional) | 12 (Multicanal) |
+| **Frecuencia de Muestreo**| Nula / Relativa a la interpolación | 500 Hz (Fija de hardware) |
+| **Puntos por Registro** | 140 muestras | 60,000 muestras totales ($12 \times 5,000$) |
+| **Morfología Clínica** | Deformada / Desfasada | Preservada (Fisiológicamente exacta) |
+| **Distribución de Clases**| Sintética / Reducida | Desbalanceada (Escenario clínico real) |
+
+### Justificación de la Migración
+El uso original de **ECG5000** permitió verificar la viabilidad técnica de la red convolucional temporal (TCN) y el autoencoder variacional condicional (cVAE) para procesar secuencias numéricas homogeneizadas. Sin embargo, para evitar el sobreajuste a señales artificialmente deformadas y permitir que el modelo generalice ante electrocardiogramas reales, el proyecto migró hacia la **Base de Datos de 12 Derivaciones de PhysioNet**.
+
+Esta transición requirió el diseño de un pipeline de preprocesamiento avanzado que incluye:
+1. **Filtrado Digital:** Remoción de la deriva de línea base (*baseline wander*) mediante un filtro pasa-altas a 0.5 Hz e interferencia de red eléctrica mediante filtro Notch (50/60 Hz).
+2. **Segmentación Fisiológica:** Localización precisa de complejos QRS mediante el algoritmo de Pan-Tompkins para extraer ventanas simétricas centradas en el pico R (preservando el ancho real en milisegundos).
+3. **Optimización de Datos:** Ingesta vectorizada de archivos `.mat`/`.hea` y estructuración del dataset mediante un motor de datos de alto rendimiento para mitigar los cuellos de botella en la RAM antes de la conversión a tensores de entrenamiento.
 
 ## Instalación y Uso
 

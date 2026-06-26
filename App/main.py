@@ -313,12 +313,15 @@ def plot_probs_bar(probs: np.ndarray, target_cls: str) -> go.Figure:
         textposition="outside",
         textfont=dict(size=11, color="#e0eaff"),
     ))
+    
+    # Separamos la actualización de Y-axis para evitar conflictos con DARK_LAYOUT
     fig.update_layout(
         **DARK_LAYOUT,
         title=dict(text="Verificación del clasificador (prob. media)", font=dict(color="#7ecfff", size=13)),
-        yaxis_title="Confianza (%)", yaxis=dict(range=[0, 115], **DARK_LAYOUT["yaxis"]),
+        yaxis_title="Confianza (%)",
         height=260,
     )
+    fig.update_yaxes(range=[0, 115])
     return fig
 
 
@@ -693,16 +696,17 @@ with tab_cmp:
                 x=t, y=bts.mean(axis=0), mode="lines",
                 line=dict(color=CLASS_INFO[cn]["color"], width=2),
             ))
+            # Aplicamos layout base separando los ejes para evitar conflictos
             fig_mini.update_layout(
                 **DARK_LAYOUT,
                 title=dict(text=f"{cn} — {CLASS_INFO[cn]['desc'][:20]}",
                            font=dict(color=CLASS_INFO[cn]["color"], size=11)),
                 height=180,
-                xaxis=dict(showticklabels=False, **DARK_LAYOUT["xaxis"]),
-                yaxis=dict(showticklabels=True, **DARK_LAYOUT["yaxis"]),
                 margin=dict(l=30, r=10, t=35, b=10),
                 showlegend=False,
             )
+            fig_mini.update_xaxes(showticklabels=False)
+            fig_mini.update_yaxes(showticklabels=True)
             col.plotly_chart(fig_mini, width="stretch")
     else:
         st.markdown("""

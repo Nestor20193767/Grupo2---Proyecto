@@ -23,8 +23,14 @@ st.markdown("""
 # ==========================================
 # 2. PARÁMETROS DEL MODELO
 # ==========================================
-ONNX_MODEL_PATH = "tcncvae_decoder_physionet.onnx"
-CLASES_ARRITMIA = ['AFL', 'LVQRS', 'NSIVCB', 'Other', 'PAC', 'QTIE', 'STD']
+import os
+
+# Usar os.path garantiza que la ruta funcione perfectamente en los servidores Linux de Streamlit
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ONNX_MODEL_PATH = os.path.join(BASE_DIR, "Modelo", "tcncvae_decoder_physionet.onnx")
+
+# CLASES_ARRITMIA = ['AFL', 'LVQRS', 'NSIVCB', 'Other', 'PAC', 'QTIE', 'STD']
+CLASES_ARRITMIA = ['SB', 'NSR', 'AFL', 'ST', 'AF']
 NUM_CLASES = len(CLASES_ARRITMIA)
 
 # NOTA PARA EL JURADO: Esta dimensión es inmutable post-entrenamiento debido a la arquitectura de la red neuronal.

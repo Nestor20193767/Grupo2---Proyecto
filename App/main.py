@@ -38,10 +38,7 @@ LATENT_DIM = 32
 
 @st.cache_resource
 def load_onnx_session(model_path):
-    try:
-        return ort.InferenceSession(model_path)
-    except:
-        return None
+    return ort.InferenceSession(model_path)
 
 # ==========================================
 # 3. INTERFAZ GRÁFICA (UI)

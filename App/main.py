@@ -121,10 +121,10 @@ with col_inputs:
         xaxis=dict(visible=False), 
         yaxis=dict(range=[-5, 5], visible=False) # Rango fijo para ver los cambios de escala
     )
-    st.plotly_chart(fig_z, use_container_width=True)
+    st.plotly_chart(fig_z, width="stretch")
 
     st.markdown("---")
-    btn_generar = st.button("⚡ SINTETIZAR SEÑAL ECG", use_container_width=True, type="primary")
+    btn_generar = st.button("⚡ SINTETIZAR SEÑAL ECG", width="stretch", type="primary")
 
 with col_monitor:
     st.header("2. Monitor de Salida")
@@ -138,7 +138,7 @@ with col_monitor:
     )
     
     if not btn_generar:
-        monitor_placeholder.plotly_chart(fig_vacia, use_container_width=True)
+        monitor_placeholder.plotly_chart(fig_vacia, width="stretch")
         st.info("👈 Ajusta los parámetros del ruido y presiona **Sintetizar Señal**.")
 
 # ==========================================
@@ -195,5 +195,5 @@ if btn_generar:
                 showlegend=False
             )
             
-            monitor_placeholder.plotly_chart(fig, use_container_width=True)
+            monitor_placeholder.plotly_chart(fig, width="stretch")
             time.sleep(0.01)

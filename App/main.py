@@ -30,7 +30,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ONNX_MODEL_PATH = os.path.join(BASE_DIR, "Modelo", "tcncvae_decoder_physionet.onnx")
 
 # CLASES_ARRITMIA = ['AFL', 'LVQRS', 'NSIVCB', 'Other', 'PAC', 'QTIE', 'STD']
-CLASES_ARRITMIA = ['SB', 'NSR', 'AFL', 'ST', 'AF']
+CLASES_ARRITMIA = ['AF', 'AFL', 'NSR', 'Others', 'SB', 'ST']
 NUM_CLASES = len(CLASES_ARRITMIA)
 
 # NOTA PARA EL JURADO: Esta dimensión es inmutable post-entrenamiento debido a la arquitectura de la red neuronal.
@@ -158,13 +158,16 @@ if btn_generar:
         # Ejecutar modelo
         input_names = [inp.name for inp in session.get_inputs()]
         output_name = session.get_outputs()[0].name
-        
+        """
         try:
             output = session.run([output_name], {input_names[0]: z_input, input_names[1]: c_input})[0]
         except:
             z_c_concat = np.concatenate([z_input, c_input], axis=1)
             output = session.run([output_name], {input_names[0]: z_c_concat})[0]
             
+        senal_generada = output.flatten()
+        """
+        output = session.run([output_name], {input_names[0]: z_input, input_names[1]: c_input})[0]
         senal_generada = output.flatten()
         
         # Animación del Monitor

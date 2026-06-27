@@ -506,39 +506,49 @@ with tab_gen:
                     f"Dilataciones = (1,2,4,8,16,32)</p>"
                     f"</div>",unsafe_allow_html=True)
 
-        # ── Descargas ────────────────────────────────────────────────────────
+       # ── Descargas ────────────────────────────────────────────────────────
         st.markdown("<hr style='margin:.5rem 0;'>",unsafe_allow_html=True)
         dc1,dc2,dc3=st.columns(3)
         
         # 1. Blindaje para las señales
         _beats_2d = np.atleast_2d(beats)
-        df_b=pd.DataFrame(_beats_2d, columns=[f"t{i}" for i in range(SEQ_LEN)])
-        df_b.insert(0,"clase",cls_u)
+        df_b = pd.DataFrame(_beats_2d, columns=[f"t{i}" for i in range(SEQ_LEN)])
+        df_b.insert(0, "clase", cls_u)
         dc1.download_button("⬇ Señales (.csv)",
             df_b.to_csv(index=False).encode(),
-            f"arrys_{cls_u}_{n}beats.csv","text/csv")
+            f"arrys_{cls_u}_{n}beats.csv", "text/csv")
             
         # 2. Blindaje para el espacio latente
         if z_u is not None:
             _z_2d = np.atleast_2d(z_u)
-            df_z=pd.DataFrame(_z_2d, columns=[f"z{i}" for i in range(LATENT_DIM)])
+            df_z = pd.DataFrame(_z_2d, columns=[f"z{i}" for i in range(LATENT_DIM)])
             dc2.download_button("⬇ Vector z (.csv)",
                 df_z.to_csv(index=False).encode(),
-                f"arrys_z_{cls_u}.csv","text/csv")
+                f"arrys_z_{cls_u}.csv", "text/csv")
                 
-        # 3. Blindaje para el clasificador (El causante del error)
+        # 3. Blindaje absoluto para el clasificador (adaptativo a las clases reales del modelo)
         if probs is not None:
-            # Forzamos dimensiones estrictas para evitar el ValueError de Pandas
-            _probs_2d = np.array(probs).reshape(-1, len(CLASS_NAMES))
-            df_c = pd.DataFrame(_probs_2d, columns=CLASS_NAMES)
+            probs_arr = np.array(probs)
+            # Detectamos la cantidad real de clases que devolvió el modelo ONNX
+            out_classes = probs_arr.shape[-1] if probs_arr.ndim > 0 else len(CLASS_NAMES)
+            
+            # Ajustamos los encabezados de las columnas dinámicamente
+            cols = CLASS_NAMES[:out_classes] if out_classes <= len(CLASS_NAMES) else [f"Class_{i}" for i in range(out_classes)]
+            
+            # Ahora el reshape usará la dimensión exacta que necesita
+            _probs_2d = probs_arr.reshape(-1, out_classes)
+            df_c = pd.DataFrame(_probs_2d, columns=cols)
             
             _preds_1d = np.atleast_1d(preds).astype(int)
-            df_c.insert(0, "pred", [CLASS_NAMES[p] for p in _preds_1d])
+            # Evita IndexErrors si el modelo predice un índice mayor a los nombres disponibles
+            pred_names = [CLASS_NAMES[p] if p < len(CLASS_NAMES) else f"Class_{p}" for p in _preds_1d]
+            
+            df_c.insert(0, "pred", pred_names)
             df_c.insert(0, "objetivo", cls_u)
             
             dc3.download_button("⬇ Predicciones clf (.csv)",
                 df_c.to_csv(index=False).encode(),
-                f"arrys_clf_{cls_u}.csv","text/csv")
+                f"arrys_clf_{cls_u}.csv", "text/csv")
 
 # ─── TAB 2: CLASIFICAR MUESTRA REAL ──────────────────────────────────────────
 with tab_real:

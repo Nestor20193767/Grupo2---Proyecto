@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "arrys-ecg"
+version = "1.0.0"
+description = "Generación condicionada de señales ECG sintéticas con TCN-cVAE"
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+authors = [
+  {name = "Marx Ríos"},
+  {name = "Nestor Allende"},
+  {name = "Renzo Luna"},
+]
+dependencies = [
+  "numpy>=1.26,<3",
+  "onnxruntime>=1.18,<2",
+  "joblib>=1.3,<2",
+  "scikit-learn>=1.4,<2",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+exclude = ["notebooks", "legacy", "app/streamlit_app.py"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

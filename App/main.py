@@ -207,7 +207,7 @@ def static_fig(beats,cls_name):
         legend=dict(orientation="h",y=-.2,font=dict(size=10)))
     return fig
 
-ddef animated_fig(beat,cls_name,step):
+def animated_fig(beat,cls_name,step):
     """Figura parcial para animación trazo-a-trazo."""
     t=np.arange(SEQ_LEN)/FS*1000
     color=CLASS_INFO[cls_name]["color"]

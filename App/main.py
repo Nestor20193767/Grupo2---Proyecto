@@ -509,20 +509,33 @@ with tab_gen:
         # ── Descargas ────────────────────────────────────────────────────────
         st.markdown("<hr style='margin:.5rem 0;'>",unsafe_allow_html=True)
         dc1,dc2,dc3=st.columns(3)
-        df_b=pd.DataFrame(beats,columns=[f"t{i}" for i in range(SEQ_LEN)])
+        
+        # 1. Blindaje para las señales
+        _beats_2d = np.atleast_2d(beats)
+        df_b=pd.DataFrame(_beats_2d, columns=[f"t{i}" for i in range(SEQ_LEN)])
         df_b.insert(0,"clase",cls_u)
         dc1.download_button("⬇ Señales (.csv)",
             df_b.to_csv(index=False).encode(),
             f"arrys_{cls_u}_{n}beats.csv","text/csv")
+            
+        # 2. Blindaje para el espacio latente
         if z_u is not None:
-            df_z=pd.DataFrame(z_u,columns=[f"z{i}" for i in range(LATENT_DIM)])
+            _z_2d = np.atleast_2d(z_u)
+            df_z=pd.DataFrame(_z_2d, columns=[f"z{i}" for i in range(LATENT_DIM)])
             dc2.download_button("⬇ Vector z (.csv)",
                 df_z.to_csv(index=False).encode(),
                 f"arrys_z_{cls_u}.csv","text/csv")
+                
+        # 3. Blindaje para el clasificador (El causante del error)
         if probs is not None:
-            df_c=pd.DataFrame(probs,columns=CLASS_NAMES)
-            df_c.insert(0,"pred",[CLASS_NAMES[p] for p in preds])
-            df_c.insert(0,"objetivo",cls_u)
+            # Forzamos dimensiones estrictas para evitar el ValueError de Pandas
+            _probs_2d = np.array(probs).reshape(-1, len(CLASS_NAMES))
+            df_c = pd.DataFrame(_probs_2d, columns=CLASS_NAMES)
+            
+            _preds_1d = np.atleast_1d(preds).astype(int)
+            df_c.insert(0, "pred", [CLASS_NAMES[p] for p in _preds_1d])
+            df_c.insert(0, "objetivo", cls_u)
+            
             dc3.download_button("⬇ Predicciones clf (.csv)",
                 df_c.to_csv(index=False).encode(),
                 f"arrys_clf_{cls_u}.csv","text/csv")

@@ -201,7 +201,7 @@ python scripts/check_repository.py --allow-missing-models
 - [Guía directa para actualizar GitHub](COMO_ACTUALIZAR_GITHUB.md)
 - [Migración desde la estructura antigua](docs/MIGRATION.md)
 - [Inconsistencias y pendientes](docs/KNOWN_ISSUES.md)
-- [Paper del proyecto](docs/paper/paper_ieee_arrys.pdf)
+- [Paper del proyecto](docs/paper/paper_ieee_arrys.docx.pdf)
 
 ## Equipo
 

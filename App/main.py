@@ -172,13 +172,16 @@ def _rgb(h):
     return ",".join(str(int(h[i:i+2],16)) for i in (0,2,4))
 
 def empty_monitor():
-    fig=go.Figure()
-    fig.update_layout(**_DL,height=340,
-        xaxis=dict(range=[0,SEQ_LEN/FS*1000],**_DL["xaxis"],showticklabels=False),
-        yaxis=dict(range=[-3.5,3.5],**_DL["yaxis"]),
+    fig = go.Figure()
+    # 1. Aplicamos los estilos visuales base (colores, fuentes, márgenes)
+    fig.update_layout(**_DL, height=340,
         annotations=[dict(text="Pulsa ⚡ Generar ECG para ver la señal",
             xref="paper",yref="paper",x=.5,y=.5,
             font=dict(color="#2a4a6a",size=14),showarrow=False)])
+    
+    # 2. Modificamos los rangos y comportamiento de los ejes de forma segura
+    fig.update_xaxes(range=[0, SEQ_LEN/FS*1000], showticklabels=False)
+    fig.update_yaxes(range=[-3.5, 3.5])
     return fig
 
 def static_fig(beats,cls_name):
@@ -207,38 +210,45 @@ def static_fig(beats,cls_name):
         legend=dict(orientation="h",y=-.2,font=dict(size=10)))
     return fig
 
-def animated_fig(beat,cls_name,step):
+def animated_fig(beat, cls_name, step):
     """Figura parcial para animación trazo-a-trazo."""
-    t=np.arange(SEQ_LEN)/FS*1000
-    color=CLASS_INFO[cls_name]["color"]
-    fig=go.Figure()
+    t = np.arange(SEQ_LEN)/FS*1000
+    color = CLASS_INFO[cls_name]["color"]
+    fig = go.Figure()
+    
     # Segmento ya dibujado
-    fig.add_trace(go.Scatter(x=t[:step],y=beat[:step],mode="lines",
-        line=dict(color=color,width=2.2),showlegend=False))
+    fig.add_trace(go.Scatter(x=t[:step], y=beat[:step], mode="lines",
+        line=dict(color=color, width=2.2), showlegend=False))
+    
     # Punto "cursor" en la punta
-    if step>0 and step<SEQ_LEN:
-        fig.add_trace(go.Scatter(x=[t[step-1]],y=[beat[step-1]],mode="markers",
-            marker=dict(color="white",size=7,symbol="circle"),showlegend=False))
-    fig.update_layout(**_DL,height=340,
+    if step > 0 and step < SEQ_LEN:
+        fig.add_trace(go.Scatter(x=[t[step-1]], y=[beat[step-1]], mode="markers",
+            marker=dict(color="white", size=7, symbol="circle"), showlegend=False))
+            
+    fig.update_layout(**_DL, height=340,
         title=dict(text=f"⚡ Sintetizando — {cls_name} · {CLASS_INFO[cls_name]['desc']}",
-                   font=dict(color=color,size=13)))
-    fig.update_xaxes(range=[0,SEQ_LEN/FS*1000], title_text="Tiempo (ms)")
-    fig.update_yaxes(range=[-3.5,3.5], title_text="Amplitud (Z-score)")
+                   font=dict(color=color, size=13)))
+                   
+    fig.update_xaxes(range=[0, SEQ_LEN/FS*1000], title_text="Tiempo (ms)")
+    fig.update_yaxes(range=[-3.5, 3.5], title_text="Amplitud (Z-score)")
     return fig
 
-def probs_fig(probs,target):
-    mean_p=probs.mean(0) if probs.ndim==2 else probs
-    colors=[CLASS_INFO[c]["color"] for c in CLASS_NAMES]
-    border=["rgba(255,255,255,.9)" if c==target else "rgba(0,0,0,0)" for c in CLASS_NAMES]
-    fig=go.Figure(go.Bar(x=CLASS_NAMES,y=mean_p*100,
-        marker=dict(color=colors,line=dict(color=border,width=2)),
+def probs_fig(probs, target):
+    mean_p = probs.mean(0) if probs.ndim == 2 else probs
+    colors = [CLASS_INFO[c]["color"] for c in CLASS_NAMES]
+    border = ["rgba(255,255,255,.9)" if c == target else "rgba(0,0,0,0)" for c in CLASS_NAMES]
+    
+    fig = go.Figure(go.Bar(x=CLASS_NAMES, y=mean_p*100,
+        marker=dict(color=colors, line=dict(color=border, width=2)),
         text=[f"{p*100:.1f}%" for p in mean_p],
-        textposition="outside",textfont=dict(size=10.5,color="#dde8f5")))
-    fig.update_layout(**_DL,height=240,
+        textposition="outside", textfont=dict(size=10.5, color="#dde8f5")))
+        
+    fig.update_layout(**_DL, height=240,
         title=dict(text="Confianza diagnóstica del clasificador (%)",
-                   font=dict(color="#7ecfff",size=12)),
+                   font=dict(color="#7ecfff", size=12)),
         yaxis_title="%")
-    fig.update_yaxes(range=[0,118])
+        
+    fig.update_yaxes(range=[0, 118])
     return fig
 
 def compare_fig(beats_dict):

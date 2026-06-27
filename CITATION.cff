@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "Si utiliza este repositorio, cite el trabajo ARRYS."
+title: "ARRYS: Generación de señales ECG sintéticas condicionadas mediante TCN-cVAE"
+type: software
+version: 1.0.0
+date-released: 2026-06-26
+authors:
+  - family-names: "Ríos"
+    given-names: "Marx"
+  - family-names: "Allende"
+    given-names: "Nestor"
+  - family-names: "Luna"
+    given-names: "Renzo"
+repository-code: "https://github.com/Nestor20193767/Grupo2---Proyecto"
+license: MIT

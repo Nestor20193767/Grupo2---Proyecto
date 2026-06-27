@@ -207,7 +207,7 @@ def static_fig(beats,cls_name):
         legend=dict(orientation="h",y=-.2,font=dict(size=10)))
     return fig
 
-def animated_fig(beat,cls_name,step):
+ddef animated_fig(beat,cls_name,step):
     """Figura parcial para animación trazo-a-trazo."""
     t=np.arange(SEQ_LEN)/FS*1000
     color=CLASS_INFO[cls_name]["color"]
@@ -221,9 +221,9 @@ def animated_fig(beat,cls_name,step):
             marker=dict(color="white",size=7,symbol="circle"),showlegend=False))
     fig.update_layout(**_DL,height=340,
         title=dict(text=f"⚡ Sintetizando — {cls_name} · {CLASS_INFO[cls_name]['desc']}",
-                   font=dict(color=color,size=13)),
-        xaxis=dict(range=[0,SEQ_LEN/FS*1000],title="Tiempo (ms)",**_DL["xaxis"]),
-        yaxis=dict(range=[-3.5,3.5],title="Amplitud (Z-score)",**_DL["yaxis"]))
+                   font=dict(color=color,size=13)))
+    fig.update_xaxes(range=[0,SEQ_LEN/FS*1000], title_text="Tiempo (ms)")
+    fig.update_yaxes(range=[-3.5,3.5], title_text="Amplitud (Z-score)")
     return fig
 
 def probs_fig(probs,target):
@@ -237,7 +237,8 @@ def probs_fig(probs,target):
     fig.update_layout(**_DL,height=240,
         title=dict(text="Confianza diagnóstica del clasificador (%)",
                    font=dict(color="#7ecfff",size=12)),
-        yaxis=dict(range=[0,118],**_DL["yaxis"]),yaxis_title="%")
+        yaxis_title="%")
+    fig.update_yaxes(range=[0,118])
     return fig
 
 def compare_fig(beats_dict):

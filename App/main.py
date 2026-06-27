@@ -677,25 +677,30 @@ with tab_real:
 # ─── TAB 3: COMPARACIÓN DE CLASES ─────────────────────────────────────────────
 with tab_cmp:
     if st.session_state.multi:
-        st.plotly_chart(compare_fig(st.session_state.multi),use_container_width=True)
+        st.plotly_chart(compare_fig(st.session_state.multi), use_container_width=True)
         st.markdown("### Detalle por clase")
-        cols=st.columns(3)
-        for i,(cn,bts) in enumerate(st.session_state.multi.items()):
-            t=np.arange(SEQ_LEN)/FS*1000
-            fm=go.Figure(go.Scatter(x=t,y=bts.mean(0),mode="lines",
-                line=dict(color=CLASS_INFO[cn]["color"],width=2)))
-            fm.update_layout(**_DL,height=170,showlegend=False,
+        cols = st.columns(3)
+        for i, (cn, bts) in enumerate(st.session_state.multi.items()):
+            t = np.arange(SEQ_LEN)/FS*1000
+            fm = go.Figure(go.Scatter(x=t, y=bts.mean(0), mode="lines",
+                line=dict(color=CLASS_INFO[cn]["color"], width=2)))
+            
+            # Corregido: Aplicamos la base limpia de _DL sin mutar inline el sub-diccionario xaxis
+            fm.update_layout(**_DL, height=170, showlegend=False,
                 title=dict(text=f"{cn} · {CLASS_INFO[cn]['desc'][:20]}",
-                           font=dict(color=CLASS_INFO[cn]["color"],size=10)),
-                margin=dict(l=28,r=8,t=32,b=8),
-                xaxis=dict(showticklabels=False,**_DL["xaxis"]))
-            cols[i%3].plotly_chart(fm,use_container_width=True)
+                           font=dict(color=CLASS_INFO[cn]["color"], size=10)),
+                margin=dict(l=28, r=8, t=32, b=8))
+            
+            # Apagamos los números del eje X de forma segura e independiente
+            fm.update_xaxes(showticklabels=False)
+            
+            cols[i%3].plotly_chart(fm, use_container_width=True)
     else:
         st.markdown(
             "<div style='text-align:center;padding:60px 20px;color:#1a3a5a;'>"
             "<p style='font-size:2.6rem;'>📊</p>"
             "<p style='font-size:1rem;font-weight:600;'>Pulsa <b>🔄 Comparar clases</b></p>"
-            "</div>",unsafe_allow_html=True)
+            "</div>", unsafe_allow_html=True)
 
 # ─── TAB 4: ARQUITECTURA & DATASET ───────────────────────────────────────────
 with tab_info:

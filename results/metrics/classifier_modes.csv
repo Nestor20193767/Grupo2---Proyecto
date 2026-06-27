@@ -1,0 +1,5 @@
+mode,train_data,test_data,accuracy,recall_macro,f1_macro,auc_roc
+A,real,real,35.47,40.64,32.73,
+B,synthetic,real,41.03,47.83,40.38,
+C,real+synthetic,real,52.70,55.65,51.21,
+D,real,synthetic,34.56,50.30,32.69,

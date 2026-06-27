@@ -1,0 +1,8 @@
+metric,value,unit,notes
+validation_reconstruction_loss,0.11811,loss,best reported validation reconstruction
+train_validation_gap,-0.01837,loss,no overfitting reported
+active_units,32,count,out of 32 latent dimensions
+diversity_ratio_approx,1.0,ratio,approximately one across classes
+coverage_min,0.45,ratio,reported range lower bound
+coverage_max,0.56,ratio,reported range upper bound
+memorization_rate_approx,0.0,ratio,approximately zero

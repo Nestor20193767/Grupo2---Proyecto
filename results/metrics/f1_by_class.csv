@@ -1,0 +1,6 @@
+class,mode_A_real,mode_C_real_plus_synthetic
+SB,35,59
+NSR,41,51
+AFL,13,38
+ST,50,69
+AF,24,38

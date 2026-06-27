@@ -6,6 +6,8 @@
 
 Repositorio del Grupo 2 para generación condicionada de latidos ECG sintéticos y evaluación de su utilidad en clasificación de arritmias. El pipeline final combina una **Temporal Convolutional Network** con un **conditional Variational Autoencoder (TCN-cVAE)** y se evalúa mediante TSTR/TRTS sobre señales reales no vistas.
 
+link Demo: [ARRYS](https://arrys-generador-arritmias.streamlit.app/)
+
 > **Uso exclusivamente académico y de investigación.** Las señales y predicciones no son un dispositivo médico, no han sido validadas clínicamente y no deben utilizarse para diagnóstico.
 
 ## Estado del proyecto

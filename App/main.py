@@ -258,6 +258,7 @@ def compare_fig(beats_dict):
         fig.add_trace(go.Scatter(x=t,y=bts.mean(0),mode="lines",
             line=dict(color=CLASS_INFO[cn]["color"],width=2),
             name=f"{cn} — {CLASS_INFO[cn]['desc']}"))
+            
     fig.update_layout(**_DL,height=320,
         title=dict(text="Morfología media por clase clínica",font=dict(color="#00c9a7",size=13)),
         xaxis_title="Tiempo (ms)",yaxis_title="Amplitud (Z-score)",

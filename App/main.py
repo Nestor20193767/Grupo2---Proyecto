@@ -681,18 +681,25 @@ with tab_cmp:
         st.plotly_chart(compare_fig(st.session_state.multi), use_container_width=True)
         st.markdown("### Detalle por clase")
         cols = st.columns(3)
+        
         for i, (cn, bts) in enumerate(st.session_state.multi.items()):
             t = np.arange(SEQ_LEN)/FS*1000
             fm = go.Figure(go.Scatter(x=t, y=bts.mean(0), mode="lines",
                 line=dict(color=CLASS_INFO[cn]["color"], width=2)))
             
-            # Corregido: Aplicamos la base limpia de _DL sin mutar inline el sub-diccionario xaxis
-            fm.update_layout(**_DL, height=170, showlegend=False,
+            # 1. Aplicamos TODA la base visual sin mutarla
+            fm.update_layout(**_DL)
+            
+            # 2. Sobrescribimos las dimensiones y márgenes específicos para estas sub-tarjetas
+            fm.update_layout(
+                height=170, 
+                showlegend=False,
                 title=dict(text=f"{cn} · {CLASS_INFO[cn]['desc'][:20]}",
                            font=dict(color=CLASS_INFO[cn]["color"], size=10)),
-                margin=dict(l=28, r=8, t=32, b=8))
+                margin=dict(l=28, r=8, t=32, b=8)
+            )
             
-            # Apagamos los números del eje X de forma segura e independiente
+            # 3. Apagamos los números del eje X
             fm.update_xaxes(showticklabels=False)
             
             cols[i%3].plotly_chart(fm, use_container_width=True)

@@ -1,0 +1,25 @@
+project:
+  name: ARRYS
+  seed: 42
+
+data:
+  sampling_frequency_hz: 500
+  sequence_length: 325
+  pre_r_samples: 125
+  post_r_samples: 200
+  generator_split: 0.60
+  classifier_real_split: 0.20
+  classifier_held_out_split: 0.20
+
+model:
+  latent_dim: 32
+  beta: 0.035
+  dilations: [1, 2, 4, 8, 16, 32]
+  generator_classes: [AF, AFL, NSR, Others, SB, ST]
+  classifier_classes: [AF, AFL, NSR, SB, ST]
+
+inference:
+  provider: CPUExecutionProvider
+  default_class: NSR
+  default_beats: 8
+  default_noise: 0.8
